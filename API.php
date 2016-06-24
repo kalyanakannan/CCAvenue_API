@@ -43,7 +43,7 @@ class CCAvenue_API {
 		}
 		else
 		{
-			$status=decrypt($status2[1],$this->working_key);
+			$status=self::decrypt($status2[1],$this->working_key);
 			return $status;
 		}
 	}

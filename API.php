@@ -67,7 +67,7 @@ class CCAvenue_API {
  
 		// Encrypt merchant data with working key shared by ccavenue
 		 
-		$encrypted_data = self::encrypt($merchant_data, $this->$working_key);
+		$encrypted_data = self::encrypt($merchant_data, $this->working_key);
 		 
 		//make final request string for the API call
 		 
@@ -85,7 +85,7 @@ class CCAvenue_API {
  
 		// Encrypt merchant data with working key shared by ccavenue
 		 
-		$encrypted_data = self::encrypt($merchant_data, $this->$working_key);
+		$encrypted_data = self::encrypt($merchant_data, $this->working_key);
 		 
 		//make final request string for the API call
 		 
@@ -114,7 +114,7 @@ class CCAvenue_API {
  
 		// Encrypt merchant data with working key shared by ccavenue
 		 
-		$encrypted_data = self::encrypt($merchant_data, $this->$working_key);
+		$encrypted_data = self::encrypt($merchant_data, $this->working_key);
 		 
 		//make final request string for the API call
 		 
@@ -144,7 +144,7 @@ class CCAvenue_API {
  
 		// Encrypt merchant data with working key shared by ccavenue
 		 
-		$encrypted_data = self::encrypt($merchant_data, $this->$working_key);
+		$encrypted_data = self::encrypt($merchant_data, $this->working_key);
 		 
 		//make final request string for the API call
 		 
@@ -175,7 +175,7 @@ class CCAvenue_API {
  
 		// Encrypt merchant data with working key shared by ccavenue
 		 
-		$encrypted_data = self::encrypt($merchant_data, $this->$working_key);
+		$encrypted_data = self::encrypt($merchant_data, $this->working_key);
 		 
 		//make final request string for the API call
 		 

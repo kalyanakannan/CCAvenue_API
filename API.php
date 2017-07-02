@@ -17,6 +17,9 @@ class CCAvenue_API {
 	// Provide access code Shared by CCAVENUES
 
 	private $access_code = '';
+	
+	//Version Number
+	private $version = '1.1';
 
 	private $URL="https://login.ccavenue.com/apis/servlet/DoWebTrans";
 
@@ -38,9 +41,10 @@ class CCAvenue_API {
 		$dataSize=sizeof($information);
 		$status1=explode('=',$information[0]);
 		$status2=explode('=',$information[1]);
+		$status3=explode('=',$information[2]);
 		if($status1[1] == '1'){
 			$recorddata=$status2[1];
-			return $recorddata;
+			return $recorddata." Error Code:".$status3[1];
 		}
 		else
 		{
@@ -53,8 +57,8 @@ class CCAvenue_API {
 	{
 		/*
 			function for get order status
-			
-		*/	
+
+		*/
 		$merchant_data = json_encode($post_data);
 
 		/*
@@ -65,14 +69,14 @@ class CCAvenue_API {
 			   "order_no": "33231644"
 			}
 		*/
- 
+
 		// Encrypt merchant data with working key shared by ccavenue
-		 
+
 		$encrypted_data = self::encrypt($merchant_data, $this->working_key);
-		 
+
 		//make final request string for the API call
-		 
-		$final_data ="request_type=JSON&access_code=".$this->access_code."&command=orderStatusTracker&response_type=JSON&enc_request=".$encrypted_data;
+        $command="orderStatusTracker";
+		$final_data ="request_type=JSON&access_code=".$this->access_code."&command=".$command."&response_type=JSON&version=".$this->version."&enc_request=".$encrypted_data;
 		$result = self::api_call($final_data);
 		return $result;
 	}
@@ -83,14 +87,14 @@ class CCAvenue_API {
 			function for get pending orders
 		*/
 		$merchant_data = json_encode($post_data);
- 
+
 		// Encrypt merchant data with working key shared by ccavenue
-		 
+
 		$encrypted_data = self::encrypt($merchant_data, $this->working_key);
-		 
+
 		//make final request string for the API call
-		 
-		$final_data ="request_type=JSON&access_code=".$this->access_code."&command=getPendingOrders&response_type=JSON&enc_request=".$encrypted_data;
+        $command="getPendingOrders";
+		$final_data ="request_type=JSON&access_code=".$this->access_code."&command=".$command."&response_type=JSON&version=".$this->version."&enc_request=".$encrypted_data;
 		$result = self::api_call($final_data);
 		return $result;
 	}
@@ -112,14 +116,14 @@ class CCAvenue_API {
 		   		]
 			}
 		*/
- 
+
 		// Encrypt merchant data with working key shared by ccavenue
-		 
+
 		$encrypted_data = self::encrypt($merchant_data, $this->working_key);
-		 
+
 		//make final request string for the API call
-		 
-		$final_data ="request_type=JSON&access_code=".$this->access_code."&command=confirmOrder&response_type=JSON&enc_request=".$encrypted_data;
+        $command="confirmOrder";
+		$final_data ="request_type=JSON&access_code=".$this->access_code."&command=".$command."&response_type=JSON&version=".$this->version."&enc_request=".$encrypted_data;
 		$result = self::api_call($final_data);
 
 		return $result;
@@ -142,14 +146,14 @@ class CCAvenue_API {
 			}
 
 		*/
- 
+
 		// Encrypt merchant data with working key shared by ccavenue
-		 
+
 		$encrypted_data = self::encrypt($merchant_data, $this->working_key);
-		 
+
 		//make final request string for the API call
-		 
-		$final_data ="request_type=JSON&access_code=".$this->access_code."&command=refundOrder&response_type=JSON&enc_request=".$encrypted_data;
+        $command="refundOrder";
+		$final_data ="request_type=JSON&access_code=".$this->access_code."&command=".$command."&response_type=JSON&version=".$this->version."&enc_request=".$encrypted_data;
 		$result = self::api_call($final_data);
 
 		return $result;
@@ -169,25 +173,25 @@ class CCAvenue_API {
 			   "order_List": [
 			      {"reference_no":"203000099429","amount": "1.00" },
 			      {"reference_no":"203000099429","amount": "1.00" }
-			   ] 
+			   ]
 			}
 
 		*/
- 
+
 		// Encrypt merchant data with working key shared by ccavenue
-		 
+
 		$encrypted_data = self::encrypt($merchant_data, $this->working_key);
-		 
+
 		//make final request string for the API call
-		 
-		$final_data ="request_type=JSON&access_code=".$this->access_code."&command=cancelOrder&response_type=JSON&enc_request=".$encrypted_data;
+        $command="cancelOrder";
+		$final_data ="request_type=JSON&access_code=".$this->access_code."&command=".$command."&response_type=JSON&version=".$this->version."&enc_request=".$encrypted_data;
 		$result = self::api_call($final_data);
 
 		return $result;
 	}
 
 	public function encrypt($plainText, $key)
-	{ 
+	{
 
 		$secretKey = self::hextobin(md5($key));
 		$initVector = pack("C*", 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f);
@@ -197,7 +201,7 @@ class CCAvenue_API {
 		if (mcrypt_generic_init($openMode, $secretKey, $initVector) != -1) {
 			$encryptedText = mcrypt_generic($openMode, $plainPad);
 			 mcrypt_generic_deinit($openMode);
-		} 
+		}
 		return bin2hex($encryptedText);
  	}
 
@@ -215,31 +219,31 @@ class CCAvenue_API {
 		$decryptedText = rtrim($decryptedText, "\0");
 		mcrypt_generic_deinit($openMode);
  		return $decryptedText;
- 	} 
- 
+ 	}
+
 	 // Remove repeated content from request strign
-	public function pkcs5_pad($plainText, $blockSize) 
+	public function pkcs5_pad($plainText, $blockSize)
 	{
 		$pad = $blockSize - (strlen($plainText) % $blockSize);
 	 	return $plainText . str_repeat(chr($pad), $pad);
-	 } 
-	 
- 
-	 //********** Hexadecimal to Binary function for php 4.0 version ******** 
+	 }
+
+
+	 //********** Hexadecimal to Binary function for php 4.0 version ********
 	public function hextobin($hexString)
-	{ 
+	{
 		$length = strlen($hexString);
 	 	$binString = "";
 		$count = 0;
 		while ($count < $length)
-		{ 
+		{
 			$subString = substr($hexString, $count, 2);
 			$packedString = pack("H*", $subString);
-			if ($count == 0) { 
+			if ($count == 0) {
 				$binString = $packedString;
-			} else { 
+			} else {
 				$binString.=$packedString;
-			} 
+			}
 			$count+=2;
 		}
 		return $binString;
